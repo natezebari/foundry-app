@@ -1,7 +1,11 @@
 import { TopBar } from "@/components/TopBar";
 import { MetricsSection } from "@/components/MetricsSection";
+import { getLatestMetrics } from "@/lib/queries";
 
-const MOCK_METRICS = { ccu: "18,204", revenue: "R$ 412,900", dau: "6,412", tasksDue: "6" };
+// TODO: replace the two blocks below with real Supabase queries once the
+// schema from the MVP spec is live:
+//   - tasks: select from `tasks` where status != 'done' order by due_date
+//   - calendar: select from `calendar_events` where scheduled_date >= today order by scheduled_date limit 3
 const MOCK_TASKS = [
   { id: 1, title: "Build Halloween map", assignee: "John", status: "in_progress", due: "Fri" },
   { id: 2, title: "Fix trading dupe exploit", assignee: "Priya", status: "todo", due: "Today" },
@@ -18,12 +22,15 @@ const STATUS_STYLES: Record<string, string> = {
   review: "text-mint border-mint/30",
 };
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const liveMetrics = await getLatestMetrics();
+  const metrics = { ...liveMetrics, tasksDue: String(MOCK_TASKS.length) };
+
   return (
     <>
       <TopBar title="Mission Control" />
       <main className="p-6 space-y-6">
-        <MetricsSection metrics={MOCK_METRICS} />
+        <MetricsSection metrics={metrics} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 rounded-lg border border-border bg-surface p-5">
