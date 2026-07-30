@@ -1,15 +1,19 @@
+import { redirect } from "next/navigation";
 import { TopBar } from "@/components/TopBar";
 import { ConnectGameForm } from "@/components/ConnectGameForm";
 import { createClient } from "@/lib/supabase/server";
+import { getUserContext } from "@/lib/auth";
 import { Gamepad2 } from "lucide-react";
 
-// TODO: once auth exists, filter by studio_id so each studio only sees their
-// own games instead of every row in the table.
 export default async function GamesPage() {
+  const ctx = await getUserContext();
+  if (!ctx?.studio) redirect("/login");
+
   const supabase = createClient();
   const { data: games } = await supabase
     .from("games")
     .select("id, name, roblox_universe_id")
+    .eq("studio_id", ctx.studio.id)
     .order("created_at", { ascending: false });
 
   return (
@@ -43,7 +47,7 @@ export default async function GamesPage() {
           </div>
         )}
 
-        <ConnectGameForm />
+        <ConnectGameForm studioId={ctx.studio.id} />
       </main>
     </>
   );

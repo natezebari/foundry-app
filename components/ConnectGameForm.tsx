@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export function ConnectGameForm() {
+export function ConnectGameForm({ studioId }: { studioId: string }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [universeId, setUniverseId] = useState("");
@@ -24,6 +24,7 @@ export function ConnectGameForm() {
     const { error: insertError } = await supabase.from("games").insert({
       name: name.trim(),
       roblox_universe_id: Number(universeId),
+      studio_id: studioId,
     });
 
     setLoading(false);

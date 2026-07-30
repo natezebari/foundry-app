@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
 import { TopBar } from "@/components/TopBar";
 import { MetricsSection } from "@/components/MetricsSection";
 import { getLatestMetrics } from "@/lib/queries";
+import { getUserContext } from "@/lib/auth";
 
 // TODO: replace the two blocks below with real Supabase queries once the
 // schema from the MVP spec is live:
@@ -23,7 +25,9 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const liveMetrics = await getLatestMetrics();
+  const ctx = await getUserContext();
+  if (!ctx?.studio) redirect("/login");
+  const liveMetrics = await getLatestMetrics(ctx.studio.id);
   const metrics = { ...liveMetrics, tasksDue: String(MOCK_TASKS.length) };
 
   return (

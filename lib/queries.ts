@@ -6,15 +6,14 @@ export interface LatestMetrics {
   dau: string;
 }
 
-// TODO: once auth exists, filter this by the logged-in user's studio_id so
-// each studio only sees their own game's metrics. For now it just grabs the
-// single most recent row across whatever's in game_metrics.
-export async function getLatestMetrics(): Promise<LatestMetrics> {
+// Scoped to the studio's own games via the games.studio_id relation.
+export async function getLatestMetrics(studioId: string): Promise<LatestMetrics> {
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from("game_metrics")
-    .select("ccu, dau, revenue_robux, date")
+    .select("ccu, dau, revenue_robux, date, games!inner(studio_id)")
+    .eq("games.studio_id", studioId)
     .order("date", { ascending: false })
     .limit(1)
     .maybeSingle();

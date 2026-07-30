@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Gamepad2, Users, Settings, ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
+import type { Studio } from "@/lib/auth";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -12,12 +13,10 @@ const NAV_ITEMS = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-// TODO: replace with the real studio pulled from Supabase (studios table via
-// the logged-in user's profile.studio_id) once auth is wired up.
-const MOCK_STUDIO = { name: "Nate's Studio", plan: "free" as const };
-
-export function Sidebar() {
+export function Sidebar({ studio }: { studio: Studio | null }) {
   const pathname = usePathname();
+  const studioName = studio?.name ?? "My Studio";
+  const planLabel = studio?.subscription_status === "active" ? "active" : "trial";
 
   return (
     <aside className="w-60 shrink-0 border-r border-border bg-surface flex flex-col h-screen sticky top-0">
@@ -26,7 +25,7 @@ export function Sidebar() {
       </div>
 
       <button className="mx-3 mt-4 mb-2 flex items-center justify-between rounded-md border border-border bg-surface-2 px-3 py-2.5 text-left hover:border-muted transition-colors">
-        <span className="font-mono text-xs text-text truncate">{MOCK_STUDIO.name}</span>
+        <span className="font-mono text-xs text-text truncate">{studioName}</span>
         <ChevronDown size={14} className="text-muted shrink-0" />
       </button>
 
@@ -53,7 +52,7 @@ export function Sidebar() {
       <div className="p-3 border-t border-border">
         <div className="flex items-center gap-2 rounded-md px-2 py-2 font-mono text-[11px] text-muted uppercase tracking-wide">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-mint" />
-          {MOCK_STUDIO.plan} plan
+          {planLabel} plan
         </div>
       </div>
     </aside>
