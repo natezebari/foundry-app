@@ -5,11 +5,18 @@ interface MetricCardProps {
   value: string;
   icon: LucideIcon;
   trend?: { value: string; positive: boolean };
+  onClick?: () => void;
 }
 
-export function MetricCard({ label, value, icon: Icon, trend }: MetricCardProps) {
+export function MetricCard({ label, value, icon: Icon, trend, onClick }: MetricCardProps) {
+  const Wrapper = onClick ? "button" : "div";
   return (
-    <div className="rounded-lg border border-border bg-surface p-5">
+    <Wrapper
+      onClick={onClick}
+      className={`w-full text-left rounded-lg border border-border bg-surface p-5 ${
+        onClick ? "cursor-pointer hover:border-amber/40 transition-colors" : ""
+      }`}
+    >
       <div className="flex items-center justify-between mb-3">
         <span className="font-mono text-[11px] text-muted uppercase tracking-wide">{label}</span>
         <Icon size={15} className="text-muted" />
@@ -23,6 +30,6 @@ export function MetricCard({ label, value, icon: Icon, trend }: MetricCardProps)
           </span>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 }

@@ -1,12 +1,6 @@
 import { TopBar } from "@/components/TopBar";
-import { MetricCard } from "@/components/MetricCard";
-import { Users, DollarSign, Activity, CheckSquare } from "lucide-react";
+import { MetricsSection } from "@/components/MetricsSection";
 
-// TODO: replace every block below with real Supabase queries once the schema
-// from the MVP spec is live:
-//   - metrics: select last row per game from `game_metrics`
-//   - tasks: select from `tasks` where status != 'done' order by due_date
-//   - calendar: select from `calendar_events` where scheduled_date >= today order by scheduled_date limit 3
 const MOCK_METRICS = { ccu: "18,204", revenue: "R$ 412,900", dau: "6,412", tasksDue: "6" };
 const MOCK_TASKS = [
   { id: 1, title: "Build Halloween map", assignee: "John", status: "in_progress", due: "Fri" },
@@ -29,12 +23,7 @@ export default function DashboardPage() {
     <>
       <TopBar title="Mission Control" />
       <main className="p-6 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard label="CCU" value={MOCK_METRICS.ccu} icon={Activity} trend={{ value: "4.2%", positive: true }} />
-          <MetricCard label="Revenue (24h)" value={MOCK_METRICS.revenue} icon={DollarSign} trend={{ value: "1.8%", positive: true }} />
-          <MetricCard label="DAU" value={MOCK_METRICS.dau} icon={Users} />
-          <MetricCard label="Tasks due today" value={MOCK_METRICS.tasksDue} icon={CheckSquare} />
-        </div>
+        <MetricsSection metrics={MOCK_METRICS} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 rounded-lg border border-border bg-surface p-5">
